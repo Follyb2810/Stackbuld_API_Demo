@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../build/Stackbuld_API.props" />
-</Project>
