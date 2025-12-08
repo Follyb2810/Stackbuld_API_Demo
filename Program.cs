@@ -1,4 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Stackbuld_API.Infrastructure;
+using Stackbuld_API.Module.Product;
+using Microsoft.EntityFrameworkCore;
+using Stackbuld_API.Module.Order;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,14 +10,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//?
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+
 
 //?
-// builder.Services.AddScoped<IProductService, ProductService>();
-// builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//?
-// builder.Services.AddDbContext<AppDbContext>(opts =>
-//     opts.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=app.db"));
+builder.Services.AddControllers();
 var app = builder.Build();
 
 //?
@@ -52,11 +60,12 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 
+app.MapControllers();
 app.MapGet("/", () =>
 {
     return Results.Redirect("/swagger/");
 });
-
+app.MapGet("/folly", () => "this is follyb");
 // [ApiExplorerSettings(IgnoreApi = true)]
 // app.MapGet("/", () => Redirect("/swagger/"));
 // app.MapGet("/", async context =>
