@@ -1,0 +1,6 @@
+@Stackbuld_API_HostAddress = http://localhost:5211
+
+GET {{Stackbuld_API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

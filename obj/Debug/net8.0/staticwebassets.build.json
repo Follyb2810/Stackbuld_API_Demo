@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "J1xGxIBc9kLvUrCCTcU1g7NJb0FskLJp82yYINJrg1I=",
+  "Source": "Stackbuld_API",
+  "BasePath": "_content/Stackbuld_API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
