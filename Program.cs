@@ -3,35 +3,32 @@ using Stackbuld_API.Infrastructure;
 using Stackbuld_API.Module.Product;
 using Microsoft.EntityFrameworkCore;
 using Stackbuld_API.Module.Order;
+using Stackbuld_API.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//?
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<ProductService>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<IOrderService, OrderService>();
 
-
-//?
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddControllers();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
+
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+
 var app = builder.Build();
 
-//?
-// using (var scope = app.Services.CreateScope())
-// {
-//     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-//     db.Database.Migrate();
-//     // Optionally seed data here
-// }
-// Configure the HTTP request pipeline.
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+     db.Database.Migrate();
+    await Seed_Product.SeedData(db);
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -39,6 +36,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapControllers();
+
+app.MapGet("/", () => Results.Redirect("/swagger/"));
+app.MapGet("/folly", () => "this is folly");
 
 var summaries = new[]
 {
@@ -59,19 +61,6 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast")
 .WithOpenApi();
-
-app.MapControllers();
-app.MapGet("/", () =>
-{
-    return Results.Redirect("/swagger/");
-});
-app.MapGet("/folly", () => "this is follyb");
-// [ApiExplorerSettings(IgnoreApi = true)]
-// app.MapGet("/", () => Redirect("/swagger/"));
-// app.MapGet("/", async context =>
-// {
-//     await context.Response.Redirect("/swagger/");
-// });
 
 app.Run();
 
