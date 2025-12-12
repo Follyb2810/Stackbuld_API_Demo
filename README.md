@@ -1,3 +1,8 @@
+# Stackbuld_API_Demo
+
+# /swagger/v1/swagger.json
+
+
 ```bash
 dotenet new webapi -n Stackbuld_API
 dotnet add package Microsoft.EntityFrameworkCore --version 8.0.22
@@ -11,14 +16,3 @@ dotnet ef migrations add InitialCreate
 dotnet ef database update
 dotnet run
 ```
-
-```c#
-var tasks = new List<Task<PlaceOrderResponse>>();
-for (int i = 0; i < 50; i++) {
-    tasks.Add(client.PostAsJsonAsync("/api/orders", new PlaceOrderRequest { Items = new List<PlaceOrderItemDto> { new(1,1) } }));
-}
-await Task.WhenAll(tasks);
-
-```
-
-# Stackbuld_API_Demo
